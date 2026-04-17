@@ -1,16 +1,27 @@
-# freecode
+<div align="center">
+
+```
+███████╗██████╗ ███████╗███████╗     █████╗  ██████╗ ███████╗███╗   ██╗████████╗
+██╔════╝██╔══██╗██╔════╝██╔════╝    ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+█████╗  ██████╔╝█████╗  █████╗      ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   
+██╔══╝  ██╔══██╗██╔══╝  ██╔══╝      ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   
+██║     ██║  ██║███████╗███████╗    ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   
+╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   
+```
 
 **A free, open-source terminal coding agent — Claude Code-style, powered by [z.ai](https://z.ai)'s free GLM APIs.**
 
-`freecode` gives you an interactive AI pair-programmer in your terminal that can read and edit your code, run shell commands, and ship projects to GitHub and Vercel — all driven by a free LLM backend so it doesn't cost a cent to use.
+[Live site](https://freeagent-five.vercel.app) · [Report issue](https://github.com/vasilysahrai/freeagent/issues) · [MIT license](LICENSE)
 
-> **Live site:** https://freecode-seven.vercel.app · **Repo:** https://github.com/vasilysahrai/freecode
+</div>
 
 ---
 
+`FreeAgent` gives you an interactive AI pair-programmer in your terminal that can read and edit your code, run shell commands, and ship projects to GitHub and Vercel — all driven by a free LLM backend so it doesn't cost a cent to use.
+
 ## Why this exists
 
-Tools like Claude Code, Cursor, and Aider have reset the expectation for what a developer CLI should feel like. But most of them are paid or gated. `freecode` brings the same loop — natural-language requests, streamed reasoning, tool-calling, automated shipping — on top of a genuinely free model tier from z.ai so anyone can try agentic coding without paying.
+Tools like Claude Code, Cursor, and Aider have reset the expectation for what a developer CLI should feel like. But most of them are paid or gated. `FreeAgent` brings the same loop — natural-language requests, streamed reasoning, tool-calling, automated shipping — on top of a genuinely free model tier from z.ai so anyone can try agentic coding without paying.
 
 ---
 
@@ -22,7 +33,7 @@ Tools like Claude Code, Cursor, and Aider have reset the expectation for what a 
 - **Shell tool** — arbitrary commands with captured output and exit codes.
 - **GitHub integration** — create a public repo and push your workspace in one call (via the `gh` CLI).
 - **Vercel integration** — deploy the current directory in one call (via the `vercel` CLI).
-- **One-shot mode** — `freecode -p "add a CI workflow"` for scripting.
+- **One-shot mode** — `freeagent -p "add a CI workflow"` for scripting.
 - **Workspace sandboxing** — file tools refuse paths that escape the project root.
 - **Rich terminal UI** — Claude Code-inspired panels, syntax highlighting, tool-call badges.
 
@@ -33,14 +44,14 @@ Tools like Claude Code, Cursor, and Aider have reset the expectation for what a 
 Requires Python ≥ 3.9.
 
 ```bash
-pip install git+https://github.com/vasilysahrai/freecode.git
+pip install git+https://github.com/vasilysahrai/freeagent.git
 ```
 
 Or clone and install in editable mode:
 
 ```bash
-git clone https://github.com/vasilysahrai/freecode.git
-cd freecode
+git clone https://github.com/vasilysahrai/freeagent.git
+cd freeagent
 pip install -e .
 ```
 
@@ -49,7 +60,7 @@ pip install -e .
 ## Configure
 
 1. Grab a free API key at **[z.ai](https://z.ai)**.
-2. Export it (or put it in a `.env` file in your project or `~/.freecode/.env`):
+2. Export it (or put it in a `.env` file in your project or `~/.freeagent/.env`):
 
 ```bash
 export ZAI_API_KEY=your_key_here
@@ -59,7 +70,7 @@ Optional env vars:
 
 | Variable           | Default                              | Notes                             |
 | ------------------ | ------------------------------------ | --------------------------------- |
-| `FREECODE_MODEL`   | `glm-4.5-flash`                      | Any z.ai chat model id.           |
+| `FREEAGENT_MODEL`  | `glm-4.5-flash`                      | Any z.ai chat model id.           |
 | `ZAI_BASE_URL`     | `https://api.z.ai/api/paas/v4`       | z.ai's OpenAI-compatible base.    |
 
 For the GitHub and Vercel tools you'll also want the `gh` and `vercel` CLIs installed and authenticated.
@@ -72,7 +83,7 @@ Start an interactive session in the directory you want the agent to work on:
 
 ```bash
 cd path/to/project
-freecode
+freeagent
 ```
 
 Then just talk to it:
@@ -86,7 +97,7 @@ Then just talk to it:
 Or run a single prompt and exit:
 
 ```bash
-freecode -p "summarise what this codebase does"
+freeagent -p "summarise what this codebase does"
 ```
 
 ---
@@ -95,8 +106,8 @@ freecode -p "summarise what this codebase does"
 
 ```
 ┌──────────┐    messages     ┌──────────┐
-│   you    │ ─────────────▶ │  freecode│
-└──────────┘                 │  agent   │
+│   you    │ ─────────────▶ │ FreeAgent│
+└──────────┘                 │          │
       ▲                      │          │
       │   rendered output    │          │ ── tool_calls ──▶  [files] [bash] [grep] [gh] [vercel]
       │                      │          │ ◀── results ────
@@ -115,8 +126,8 @@ Every turn the agent sends the conversation + a JSON schema for each tool to z.a
 ## Project layout
 
 ```
-freecode/
-├── freecode/
+freeagent/
+├── freeagent/
 │   ├── cli.py         # argparse + REPL
 │   ├── agent.py       # tool-calling loop
 │   ├── llm.py         # z.ai chat client
@@ -156,7 +167,7 @@ Building this required:
 
 ## Contributing
 
-Issues and PRs welcome. If you add a tool, drop it in `freecode/tools/` and register it in `freecode/tools/registry.py`. Run `python -m compileall freecode` to sanity-check.
+Issues and PRs welcome. If you add a tool, drop it in `freeagent/tools/` and register it in `freeagent/tools/registry.py`. Run `python -m compileall freeagent` to sanity-check.
 
 ---
 

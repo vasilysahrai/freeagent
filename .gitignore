@@ -12,7 +12,7 @@ env/
 
 .env
 .env.local
-.freecode/
+.freeagent/
 
 .DS_Store
 .idea/

@@ -15,7 +15,7 @@ console = Console()
 
 def banner() -> None:
     art = Text()
-    art.append("  freecode ", style="bold magenta")
+    art.append("  FreeAgent ", style="bold magenta")
     art.append("◆", style="dim")
     art.append(" a free open-source coding agent", style="dim")
     console.print(Panel(art, border_style="magenta", padding=(0, 2)))

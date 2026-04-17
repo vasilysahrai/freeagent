@@ -23,11 +23,11 @@ class Config:
     @classmethod
     def load(cls, workspace: Path | None = None) -> "Config":
         load_dotenv(dotenv_path=Path.cwd() / ".env", override=False)
-        load_dotenv(dotenv_path=Path.home() / ".freecode" / ".env", override=False)
+        load_dotenv(dotenv_path=Path.home() / ".freeagent" / ".env", override=False)
 
         api_key = os.getenv("ZAI_API_KEY") or os.getenv("Z_API_KEY") or ""
         base_url = os.getenv("ZAI_BASE_URL", DEFAULT_BASE_URL)
-        model = os.getenv("FREECODE_MODEL", DEFAULT_MODEL)
+        model = os.getenv("FREEAGENT_MODEL", DEFAULT_MODEL)
         ws = (workspace or Path.cwd()).resolve()
 
         return cls(api_key=api_key, base_url=base_url, model=model, workspace=ws)

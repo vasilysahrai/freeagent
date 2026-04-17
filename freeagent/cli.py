@@ -18,7 +18,7 @@ SLASH_COMMANDS = {"/help", "/clear", "/model", "/cwd", "/exit", "/quit"}
 
 
 def _history_path() -> Path:
-    home = Path.home() / ".freecode"
+    home = Path.home() / ".freeagent"
     home.mkdir(parents=True, exist_ok=True)
     return home / "history"
 
@@ -81,8 +81,8 @@ def _one_shot(agent: Agent, prompt: str) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="freecode",
-        description="A free open-source terminal coding agent — Claude Code-style, powered by z.ai.",
+        prog="freeagent",
+        description="FreeAgent — a free open-source terminal coding agent, Claude Code-style, powered by z.ai.",
     )
     parser.add_argument(
         "-p",
@@ -94,7 +94,7 @@ def main(argv: list[str] | None = None) -> int:
         "--cwd",
         help="Workspace directory (defaults to the current directory).",
     )
-    parser.add_argument("--version", action="version", version=f"freecode {__version__}")
+    parser.add_argument("--version", action="version", version=f"freeagent {__version__}")
     args = parser.parse_args(argv)
 
     try:

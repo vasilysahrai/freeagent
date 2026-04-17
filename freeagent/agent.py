@@ -11,7 +11,7 @@ from .llm import LLMClient
 from .tools import dispatch, schemas
 
 
-SYSTEM_PROMPT = """You are freecode, an open-source terminal coding agent inspired by Claude Code.
+SYSTEM_PROMPT = """You are FreeAgent, an open-source terminal coding agent inspired by Claude Code.
 
 You help developers plan, write, refactor, and ship real software. You have a
 workspace (the current working directory) and a set of tools for reading and
@@ -26,6 +26,7 @@ Working principles:
   and `vercel_deploy` rather than giving manual instructions.
 - Be concise. Show your work through tool calls, not narration.
 """
+
 
 
 MAX_TURNS = 20

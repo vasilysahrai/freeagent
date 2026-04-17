@@ -1,4 +1,4 @@
-from freecode.cli import main
+from freeagent.cli import main
 
 if __name__ == "__main__":
     main()

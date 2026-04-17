@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>freecode — a free open-source terminal coding agent</title>
-  <meta name="description" content="A free, open-source terminal coding agent — Claude Code-style, powered by z.ai's free GLM APIs. Ships your code to GitHub and Vercel with one prompt." />
-  <meta property="og:title" content="freecode" />
+  <title>FreeAgent — a free open-source terminal coding agent</title>
+  <meta name="description" content="FreeAgent — a free open-source terminal coding agent, Claude Code-style, powered by z.ai's free GLM APIs. Ships your code to GitHub and Vercel with one prompt." />
+  <meta property="og:title" content="FreeAgent" />
   <meta property="og:description" content="A free open-source terminal coding agent. Claude Code-style, powered by z.ai's free GLM APIs." />
   <meta property="og:type" content="website" />
   <meta name="color-scheme" content="dark" />
@@ -19,13 +19,13 @@
   <nav class="nav">
     <a class="brand" href="/">
       <span class="brand-mark">◆</span>
-      <span class="brand-name">freecode</span>
+      <span class="brand-name">FreeAgent</span>
     </a>
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#install">Install</a>
       <a href="#how">How it works</a>
-      <a class="nav-cta" href="https://github.com/vasilysahrai/freecode" target="_blank" rel="noopener">
+      <a class="nav-cta" href="https://github.com/vasilysahrai/freeagent" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.94c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.38-3.88-1.38-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.74 1.27 3.4.97.1-.76.41-1.28.74-1.57-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.3 1.19-3.1-.12-.3-.52-1.48.11-3.09 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.6.23 2.79.11 3.09.74.8 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.42.37.8 1.09.8 2.2v3.26c0 .31.21.67.79.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
         GitHub
       </a>
@@ -41,13 +41,13 @@
           <span class="grad">In your own shell.</span>
         </h1>
         <p class="lede">
-          <strong>freecode</strong> is a Claude Code-inspired CLI that reads and edits your code,
+          <strong>FreeAgent</strong> is a Claude Code-inspired CLI that reads and edits your code,
           runs commands, and ships projects to GitHub and Vercel — powered by
           <a href="https://z.ai" target="_blank" rel="noopener">z.ai</a>'s free GLM APIs so it
           genuinely costs you nothing to try.
         </p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="https://github.com/vasilysahrai/freecode" target="_blank" rel="noopener">
+          <a class="btn btn-primary" href="https://github.com/vasilysahrai/freeagent" target="_blank" rel="noopener">
             View on GitHub
           </a>
           <a class="btn btn-ghost" href="#install">Get started</a>
@@ -64,11 +64,11 @@
           <span class="tdot red"></span>
           <span class="tdot yellow"></span>
           <span class="tdot green"></span>
-          <span class="terminal-title">~/projects/todo-app — freecode</span>
+          <span class="terminal-title">~/projects/todo-app — freeagent</span>
         </div>
         <div class="terminal-body">
           <div class="line"><span class="prompt">›</span> <span class="user-cmd">add a dark-mode toggle and deploy it</span></div>
-          <div class="line muted">◆ freecode · glm-4.5-flash</div>
+          <div class="line muted">◆ FreeAgent · glm-4.5-flash</div>
           <div class="line tool">⚙ read_file <span class="muted">path=src/App.tsx</span></div>
           <div class="line tool">⚙ edit_file <span class="muted">path=src/App.tsx</span></div>
           <div class="line tool">⚙ write_file <span class="muted">path=src/theme.css</span></div>
@@ -111,7 +111,7 @@
       <div class="feature">
         <div class="ficon">◆</div>
         <h3>One-prompt GitHub</h3>
-        <p>Ask once — freecode creates a public repo with <code>gh</code> and pushes the initial commit.</p>
+        <p>Ask once — FreeAgent creates a public repo with <code>gh</code> and pushes the initial commit.</p>
       </div>
       <div class="feature">
         <div class="ficon">▲</div>
@@ -130,7 +130,7 @@
       <div class="step">
         <div class="step-no">1</div>
         <h3>Install the CLI</h3>
-        <pre><code>pip install git+https://github.com/vasilysahrai/freecode.git</code></pre>
+        <pre><code>pip install git+https://github.com/vasilysahrai/freeagent.git</code></pre>
       </div>
       <div class="step">
         <div class="step-no">2</div>
@@ -142,7 +142,7 @@
         <div class="step-no">3</div>
         <h3>Start coding</h3>
         <pre><code>cd ~/your-project
-freecode</code></pre>
+freeagent</code></pre>
       </div>
     </div>
   </section>
@@ -154,7 +154,7 @@ freecode</code></pre>
     </div>
     <div class="how">
       <pre class="how-diagram"><code>┌──────────┐    messages     ┌────────────┐
-│   you    │ ───────────────▶│  freecode  │
+│   you    │ ───────────────▶│ FreeAgent  │
 └──────────┘                 │   agent    │
       ▲                      │            │── tool_calls ─▶  files · bash · grep · gh · vercel
       │    rendered output   │            │◀── results ───
@@ -165,8 +165,8 @@ freecode</code></pre>
       └────────────────────│  z.ai GLM   │
                            └─────────────┘</code></pre>
       <p class="how-copy">
-        Every turn, freecode sends the conversation plus a JSON schema for every tool to z.ai.
-        The model replies with either natural language or a set of tool calls. freecode runs
+        Every turn, FreeAgent sends the conversation plus a JSON schema for every tool to z.ai.
+        The model replies with either natural language or a set of tool calls. FreeAgent runs
         those locally (files, shell, GitHub, Vercel), appends the results to the conversation,
         and loops until the model is satisfied.
       </p>
@@ -178,13 +178,13 @@ freecode</code></pre>
       <div>
         <div class="brand small">
           <span class="brand-mark">◆</span>
-          <span class="brand-name">freecode</span>
+          <span class="brand-name">FreeAgent</span>
         </div>
         <p class="foot-copy">Open source under the MIT license. Built by <a href="https://github.com/vasilysahrai" target="_blank" rel="noopener">Vasily Sahrai</a>.</p>
       </div>
       <div class="foot-links">
-        <a href="https://github.com/vasilysahrai/freecode" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/vasilysahrai/freecode/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/vasilysahrai/freeagent" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/vasilysahrai/freeagent/issues" target="_blank" rel="noopener">Issues</a>
         <a href="https://z.ai" target="_blank" rel="noopener">z.ai</a>
       </div>
     </div>

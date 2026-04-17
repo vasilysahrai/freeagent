@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "freecode"
+name = "freeagent"
 version = "0.1.0"
-description = "A free, open-source terminal coding agent — Claude Code-style, powered by z.ai's free GLM APIs."
+description = "FreeAgent — a free, open-source terminal coding agent, Claude Code-style, powered by z.ai's free GLM APIs."
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Vasily Sahrai" }]
@@ -28,12 +28,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vasilysahrai/freecode"
-Repository = "https://github.com/vasilysahrai/freecode"
-Issues = "https://github.com/vasilysahrai/freecode/issues"
+Homepage = "https://github.com/vasilysahrai/freeagent"
+Repository = "https://github.com/vasilysahrai/freeagent"
+Issues = "https://github.com/vasilysahrai/freeagent/issues"
 
 [project.scripts]
-freecode = "freecode.cli:main"
+freeagent = "freeagent.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["freecode*"]
+include = ["freeagent*"]
