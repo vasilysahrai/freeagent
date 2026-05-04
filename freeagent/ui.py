@@ -1,11 +1,10 @@
-"""Terminal rendering — mimics the Claude Code look (boxed panels, muted labels)."""
+"""Terminal rendering — calm, low-chrome panels with streaming support."""
 
 from __future__ import annotations
 
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
-from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 
@@ -13,12 +12,13 @@ from rich.text import Text
 console = Console()
 
 
+# ── one-shot prints ──────────────────────────────────────────────────────
 def banner() -> None:
     art = Text()
-    art.append("  FreeAgent ", style="bold magenta")
-    art.append("◆", style="dim")
-    art.append(" a free open-source coding agent", style="dim")
-    console.print(Panel(art, border_style="magenta", padding=(0, 2)))
+    art.append("FreeAgent", style="bold")
+    art.append("  ·  ", style="dim")
+    art.append("an open-source terminal coding agent", style="dim")
+    console.print(art)
 
 
 def assistant(text: str) -> None:
@@ -27,17 +27,27 @@ def assistant(text: str) -> None:
     console.print(Markdown(text))
 
 
-def user_prompt_label() -> str:
-    return "[bold cyan]›[/bold cyan] "
+# ── streaming tokens ─────────────────────────────────────────────────────
+def assistant_open() -> None:
+    pass  # nothing — we just print plain text inline
 
 
+def stream_token(t: str) -> None:
+    console.print(t, end="", soft_wrap=True, highlight=False, markup=False)
+
+
+def assistant_close() -> None:
+    console.print("")  # newline
+
+
+# ── tool calls ───────────────────────────────────────────────────────────
 def tool_call(name: str, args_preview: str) -> None:
-    header = Text()
-    header.append("⚙ ", style="yellow")
-    header.append(name, style="bold yellow")
+    h = Text()
+    h.append("· ", style="dim")
+    h.append(name, style="bold")
     if args_preview:
-        header.append(f"  {args_preview}", style="dim")
-    console.print(header)
+        h.append(f"  {args_preview}", style="dim")
+    console.print(h)
 
 
 def tool_result(name: str, body: str, ok: bool = True, max_lines: int = 18) -> None:
@@ -50,7 +60,7 @@ def tool_result(name: str, body: str, ok: bool = True, max_lines: int = 18) -> N
     if truncated:
         content += f"\n… ({len(body.splitlines()) - max_lines} more lines)"
     style = "green" if ok else "red"
-    label = "result" if ok else "error"
+    label = "ok" if ok else "error"
     console.print(
         Panel(
             content or "(empty)",
@@ -61,10 +71,7 @@ def tool_result(name: str, body: str, ok: bool = True, max_lines: int = 18) -> N
     )
 
 
-def code(body: str, lang: str = "text") -> None:
-    console.print(Syntax(body, lang, theme="monokai", line_numbers=False))
-
-
+# ── small helpers ────────────────────────────────────────────────────────
 def info(text: str) -> None:
     console.print(f"[dim]{text}[/dim]")
 
@@ -78,15 +85,34 @@ def rule() -> None:
 
 
 def help_table() -> None:
-    table = Table(title="Slash commands", show_header=False, border_style="dim")
-    table.add_column("cmd", style="bold cyan")
-    table.add_column("desc")
-    for cmd, desc in (
-        ("/help",   "show this help"),
-        ("/clear",  "reset the conversation"),
-        ("/model",  "print the active model"),
-        ("/cwd",    "print the working directory"),
-        ("/exit",   "leave the session (ctrl-d also works)"),
-    ):
-        table.add_row(cmd, desc)
+    table = Table(title=None, show_header=False, border_style="dim", box=None)
+    table.add_column("cmd", style="bold")
+    table.add_column("desc", style="dim")
+    rows = [
+        ("/help",            "show this help"),
+        ("/models",          "list models for the current provider"),
+        ("/catalog",         "list every model FreeAgent knows about"),
+        ("/provider <id>",   "switch provider (zai, groq, openrouter, ollama, openai, …)"),
+        ("/model <id>",      "switch model on the current provider"),
+        ("/key <value>",     "set/replace the API key for this session"),
+        ("/stream on|off",   "toggle token streaming"),
+        ("/clear",            "reset the conversation"),
+        ("/cwd",              "print the working directory"),
+        ("/exit",             "leave the session (ctrl-d also works)"),
+    ]
+    for c, d in rows:
+        table.add_row(c, d)
+    console.print(table)
+
+
+def models_table(rows: list[tuple[str, str, str, str]], title: str) -> None:
+    """rows: (provider, model, tier, notes)"""
+    table = Table(title=title, border_style="dim")
+    table.add_column("provider", style="bold")
+    table.add_column("model")
+    table.add_column("tier")
+    table.add_column("notes", style="dim")
+    for provider, model, tier, notes in rows:
+        tier_style = {"free": "green", "local": "cyan", "paid": "yellow"}.get(tier, "")
+        table.add_row(provider, model, f"[{tier_style}]{tier}[/{tier_style}]", notes)
     console.print(table)
