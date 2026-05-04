@@ -4,19 +4,42 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Iterator
+from typing import Any
 
-from openai import APIConnectionError, APIError, OpenAI, RateLimitError
+from openai import (
+    APIConnectionError,
+    APIError,
+    APIStatusError,
+    AuthenticationError,
+    OpenAI,
+    PermissionDeniedError,
+    RateLimitError,
+)
 
 from .config import Config
 
 
+# Re-exported so callers can `from .llm import AuthError`.
+AuthError = AuthenticationError
+QuotaError = RateLimitError
+
+
 @dataclass
 class StreamedTurn:
-    """Aggregated result of a streamed assistant turn."""
     content: str = ""
     tool_calls: list[dict[str, Any]] = field(default_factory=list)
     finish_reason: str | None = None
+
+
+def is_auth_or_quota(exc: BaseException) -> bool:
+    """True if this looks like 'your key/quota is the problem'."""
+    if isinstance(exc, (AuthenticationError, RateLimitError, PermissionDeniedError)):
+        return True
+    if isinstance(exc, APIStatusError):
+        sc = getattr(exc, "status_code", 0)
+        if sc in (401, 402, 403, 429):
+            return True
+    return False
 
 
 class LLMClient:
@@ -25,12 +48,11 @@ class LLMClient:
         self.config = config
         self.client = OpenAI(api_key=config.api_key, base_url=config.base_url)
 
-    # ── streaming ────────────────────────────────────────────────────────
     def stream(
         self,
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]] | None = None,
-        on_token: callable | None = None,
+        on_token=None,
         temperature: float = 0.3,
     ) -> StreamedTurn:
         kwargs: dict[str, Any] = {
@@ -65,11 +87,8 @@ class LLMClient:
                     idx = tc.index if tc.index is not None else 0
                     slot = tcalls.setdefault(
                         idx,
-                        {
-                            "id": "",
-                            "type": "function",
-                            "function": {"name": "", "arguments": ""},
-                        },
+                        {"id": "", "type": "function",
+                         "function": {"name": "", "arguments": ""}},
                     )
                     if tc.id:
                         slot["id"] = tc.id
@@ -86,13 +105,12 @@ class LLMClient:
         result.finish_reason = finish_reason
         return result
 
-    # ── non-stream fallback (kept for one-shot, simple checks) ───────────
     def chat(
         self,
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]] | None = None,
         temperature: float = 0.3,
-    ) -> Any:
+    ):
         kwargs: dict[str, Any] = {
             "model": self.config.model,
             "messages": messages,
@@ -109,12 +127,23 @@ class LLMClient:
         for i in range(attempts):
             try:
                 return fn()
-            except (RateLimitError, APIConnectionError) as e:
+            except (AuthenticationError, PermissionDeniedError):
+                # Don't retry — surface to caller for key-swap flow.
+                raise
+            except RateLimitError as e:
+                # 429 may be transient or quota-exhausted. Retry once with
+                # backoff; the caller can still treat it as quota-needed.
+                last = e
+                if i == attempts - 1:
+                    raise
+                time.sleep(base * (2 ** i))
+            except APIConnectionError as e:
                 last = e
                 time.sleep(base * (2 ** i))
             except APIError as e:
                 last = e
-                if 500 <= getattr(e, "status_code", 0) < 600:
+                sc = getattr(e, "status_code", 0)
+                if 500 <= sc < 600:
                     time.sleep(base * (2 ** i))
                     continue
                 raise
