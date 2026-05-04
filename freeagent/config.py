@@ -188,6 +188,13 @@ CATALOG: list[ModelEntry] = [
 DEFAULT_PROVIDER = "zai"
 
 
+def env_path() -> Path:
+    """Path to the persistent dotenv file we own (~/.freeagent/.env)."""
+    p = Path.home() / ".freeagent"
+    p.mkdir(parents=True, exist_ok=True)
+    return p / ".env"
+
+
 @dataclass
 class Config:
     provider: str
@@ -196,6 +203,8 @@ class Config:
     model: str
     workspace: Path
     stream: bool = True
+    bypass_permissions: bool = False
+    always_allow: set[str] = field(default_factory=set)
 
     @classmethod
     def load(
@@ -203,9 +212,10 @@ class Config:
         workspace: Path | None = None,
         provider: str | None = None,
         model: str | None = None,
+        bypass_permissions: bool = False,
     ) -> "Config":
         load_dotenv(dotenv_path=Path.cwd() / ".env", override=False)
-        load_dotenv(dotenv_path=Path.home() / ".freeagent" / ".env", override=False)
+        load_dotenv(dotenv_path=env_path(), override=False)
 
         prov_id = (provider or os.getenv("FREEAGENT_PROVIDER", DEFAULT_PROVIDER)).lower().strip()
         if prov_id not in PROVIDERS:
@@ -233,6 +243,7 @@ class Config:
             model=chosen_model,
             workspace=ws,
             stream=stream,
+            bypass_permissions=bypass_permissions,
         )
 
     def preset(self) -> ProviderPreset:
@@ -247,10 +258,46 @@ class Config:
         env_key = p.env_key or "API_KEY"
         raise RuntimeError(
             f"No API key for provider {p.label!r}. "
-            f"Set {env_key} in your environment or in ~/.freeagent/.env. "
+            f"Set {env_key} in your environment or run /key <value> in the REPL. "
             f"Sign up at {p.signup}."
         )
 
 
 def models_for(provider_id: str) -> list[ModelEntry]:
     return [m for m in CATALOG if m.provider == provider_id]
+
+
+def detected_keys() -> list[tuple[str, bool]]:
+    """For each provider that needs a key, report (provider_id, has_key)."""
+    out: list[tuple[str, bool]] = []
+    for pid, p in PROVIDERS.items():
+        if not p.needs_key:
+            out.append((pid, True))
+            continue
+        out.append((pid, bool(os.getenv(p.env_key or "", ""))))
+    return out
+
+
+def save_key_to_env(env_key: str, value: str) -> Path:
+    """Persist or replace `env_key=value` in ~/.freeagent/.env. Returns the path."""
+    path = env_path()
+    lines: list[str] = []
+    if path.exists():
+        lines = path.read_text(encoding="utf-8").splitlines()
+    found = False
+    for i, line in enumerate(lines):
+        stripped = line.lstrip("# ").strip()
+        if stripped.startswith(f"{env_key}="):
+            lines[i] = f"{env_key}={value}"
+            found = True
+            break
+    if not found:
+        if lines and lines[-1].strip() != "":
+            lines.append("")
+        lines.append(f"{env_key}={value}")
+    path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    try:
+        path.chmod(0o600)
+    except OSError:
+        pass
+    return path
